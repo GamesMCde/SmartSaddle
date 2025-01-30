@@ -1,0 +1,29 @@
+name: ${project.name}
+version: ${project.version}
+main: ${project.groupId}.${project.artifactId}
+api-version: '1.21'
+depends: [ 'NBTApi']
+authors: [ CuzIm1Tigaaa ]
+description: 'TODO'
+commands:
+  horsesaddle:
+    description: 'Reload the config files'
+permissions:
+  horsesaddle.*:
+    default: op
+    children:
+      horsesaddle.use:
+        default: false
+        children:
+          horsesaddle.use.horse:
+            default: false
+          horsesaddle.use.skeleton_horse:
+            default: false
+          horsesaddle.use.zombie_horse:
+            default: false
+          horsesaddle.use.donkey:
+            default: false
+          horsesaddle.use.mule:
+            default: false
+          horsesaddle.use.camel:
+            default: false
