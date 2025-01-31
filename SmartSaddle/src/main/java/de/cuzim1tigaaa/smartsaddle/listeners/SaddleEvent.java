@@ -1,18 +1,16 @@
 package de.cuzim1tigaaa.smartsaddle.listeners;
 
 import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
-import de.cuzim1tigaaa.smartsaddle.files.Config;
-import de.cuzim1tigaaa.smartsaddle.files.Permissions;
+import de.cuzim1tigaaa.smartsaddle.files.*;
 import de.cuzim1tigaaa.smartsaddle.utils.SaddleUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
-import org.bukkit.plugin.RegisteredListener;
 
 public class SaddleEvent implements Listener {
 
@@ -41,6 +39,11 @@ public class SaddleEvent implements Listener {
 		if(!horse.getPassengers().contains(player))
 			return;
 
+		if(inventoryIsFull(player)) {
+			player.sendMessage(Config.getConfig().getMessage(Paths.MESSAGES_INVENTORY_FULL));
+			return;
+		}
+
 		switch(horse.getType()) {
 			case HORSE, SKELETON_HORSE, ZOMBIE_HORSE, DONKEY, MULE, CAMEL -> {
 				if(!player.hasPermission(Permissions.SADDLE_USE + horse.getType().name().toLowerCase()))
@@ -55,6 +58,19 @@ public class SaddleEvent implements Listener {
 		player.getInventory().addItem(saddleUtils.saveHorseToSaddle(horse));
 		horse.removePassenger(player);
 		horse.remove();
+	}
+
+	public boolean inventoryIsFull(Player p) {
+		Inventory pInv = p.getInventory();
+		boolean invIsFull = true;
+
+		for(int i = 0; i < 36; i++)
+			if(pInv.getItem(i) == null) {
+				invIsFull = false;
+				break;
+			}
+
+		return invIsFull;
 	}
 
 	@EventHandler

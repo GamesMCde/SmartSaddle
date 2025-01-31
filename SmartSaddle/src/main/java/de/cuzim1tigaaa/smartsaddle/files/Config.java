@@ -96,6 +96,7 @@ public class Config {
 			fileMessages = YamlConfiguration.loadConfiguration(file);
 			set(fileMessages, Paths.MESSAGES_PERMISSION, "&cYou do not have permission to use this command");
 			set(fileMessages, Paths.MESSAGES_RELOADED, "&7The plugin has been reloaded.");
+			set(fileMessages, Paths.MESSAGES_INVENTORY_FULL, "&cYou cannot save this horse because your inventory is full!");
 
 			set(fileMessages, Paths.MESSAGES_SADDLE_NAME, "&6%TYPE%");
 			set(fileMessages, Paths.MESSAGES_SADDLE_LORE, List.of(
