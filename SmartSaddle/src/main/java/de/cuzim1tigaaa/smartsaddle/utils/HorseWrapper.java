@@ -1,33 +1,20 @@
-package de.cuzim1tigaaa.horsesaddle.utils;
+package de.cuzim1tigaaa.smartsaddle.utils;
 
 import com.google.gson.*;
+import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.iface.ReadWriteNBT;
-import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 
 public class HorseWrapper {
 
-	@Getter
-	private static class GeneralHorse {
+	private final SmartSaddle plugin;
 
-		private final int age;
-		private final double jumpStrength;
-		private final double speed;
-		private final double maxHealth;
-
-		public GeneralHorse(int age, double jumpStrength, double speed, double maxHealth) {
-			this.age = age;
-			this.jumpStrength = jumpStrength;
-			this.speed = speed;
-			this.maxHealth = maxHealth;
-		}
+	public HorseWrapper(SmartSaddle plugin) {
+		this.plugin = plugin;
 	}
-
 
 	public AbstractHorse deserialize(String json, Location location) throws JsonParseException {
 		JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
@@ -47,15 +34,14 @@ public class HorseWrapper {
 		h.setCustomName(jsonObject.get("name").getAsString());
 		h.setAge(jsonObject.get("age").getAsInt());
 		h.setJumpStrength(jsonObject.get("jumpStrength").getAsDouble());
-		h.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(jsonObject.get("speed").getAsDouble());
-		h.getAttribute(Attribute.MAX_HEALTH).setBaseValue(jsonObject.get("maxHealth").getAsDouble());
+		plugin.getHorseData().getMovementSpeed(h).setBaseValue(jsonObject.get("speed").getAsDouble());
+		plugin.getHorseData().getMaxHealth(h).setBaseValue(jsonObject.get("maxHealth").getAsDouble());
 		h.setHealth(jsonObject.get("health").getAsDouble());
 		h.setTamed(true);
 
 		ReadWriteNBT nbt = NBT.parseNBT(jsonObject.get("inventory").getAsString());
 		ItemStack[] contents = NBT.itemStackArrayFromNBT(nbt);
 		h.getInventory().setContents(contents);
-
 		return h;
 	}
 
@@ -65,8 +51,8 @@ public class HorseWrapper {
 		jsonObject.addProperty("name", src.getCustomName() == null ? "" : src.getCustomName());
 		jsonObject.addProperty("age", src.getAge());
 		jsonObject.addProperty("jumpStrength", src.getJumpStrength());
-		jsonObject.addProperty("speed", src.getAttribute(Attribute.MOVEMENT_SPEED).getValue());
-		jsonObject.addProperty("maxHealth", src.getAttribute(Attribute.MAX_HEALTH).getValue());
+		jsonObject.addProperty("speed", plugin.getHorseData().getMovementSpeed(src).getValue());
+		jsonObject.addProperty("maxHealth", plugin.getHorseData().getMaxHealth(src).getValue());
 		jsonObject.addProperty("health", src.getHealth());
 
 		ItemStack[] inventory = src.getInventory().getContents();
@@ -80,8 +66,6 @@ public class HorseWrapper {
 		if(src instanceof ChestedHorse chestedHorse)
 			jsonObject.addProperty("isCarryingChest", chestedHorse.isCarryingChest());
 
-		Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-		Bukkit.getLogger().info("Serialized horse: " + gson.toJson(jsonObject));
 		return jsonObject;
 	}
 

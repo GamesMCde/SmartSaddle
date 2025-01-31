@@ -1,24 +1,24 @@
-package de.cuzim1tigaaa.horsesaddle.listeners;
+package de.cuzim1tigaaa.smartsaddle.listeners;
 
-import de.cuzim1tigaaa.horsesaddle.HorseSaddle;
-import de.cuzim1tigaaa.horsesaddle.files.Config;
-import de.cuzim1tigaaa.horsesaddle.files.Permissions;
-import de.cuzim1tigaaa.horsesaddle.utils.SaddleUtils;
+import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
+import de.cuzim1tigaaa.smartsaddle.files.Config;
+import de.cuzim1tigaaa.smartsaddle.files.Permissions;
+import de.cuzim1tigaaa.smartsaddle.utils.SaddleUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.AbstractHorseInventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.inventory.InventoryEvent;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.*;
+import org.bukkit.plugin.RegisteredListener;
 
 public class SaddleEvent implements Listener {
 
 	private final SaddleUtils saddleUtils;
 
-	public SaddleEvent(HorseSaddle plugin) {
+	public SaddleEvent(SmartSaddle plugin) {
 		this.saddleUtils = new SaddleUtils(plugin);
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -48,11 +48,11 @@ public class SaddleEvent implements Listener {
 			}
 		}
 
-		ItemStack saddle = horseInv.getSaddle();
-		player.getInventory().addItem(saddleUtils.saveHorseToSaddle(saddle, horse));
+		event.setCancelled(true);
+		if(event.isShiftClick())
+			player.updateInventory();
 
-		horseInv.setSaddle(null);
-		player.closeInventory();
+		player.getInventory().addItem(saddleUtils.saveHorseToSaddle(horse));
 		horse.removePassenger(player);
 		horse.remove();
 	}
@@ -70,7 +70,9 @@ public class SaddleEvent implements Listener {
 		if(item.getType() != Material.SADDLE)
 			return;
 
-		if(saddleUtils.spawnHorseFromSaddle(item, event.getClickedBlock().getLocation().add(0, 1, 0)))
+		if(saddleUtils.spawnHorseFromSaddle(item, event.getClickedBlock().getLocation().add(0, 1, 0))) {
+			event.setCancelled(true);
 			player.getInventory().remove(item);
+		}
 	}
 }

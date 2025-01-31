@@ -1,18 +1,18 @@
-package de.cuzim1tigaaa.horsesaddle.command;
+package de.cuzim1tigaaa.smartsaddle.command;
 
-import de.cuzim1tigaaa.horsesaddle.HorseSaddle;
-import de.cuzim1tigaaa.horsesaddle.files.*;
+import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
+import de.cuzim1tigaaa.smartsaddle.files.*;
 import org.bukkit.command.*;
 
 import java.util.List;
 
-public class CommandHorseSaddle implements CommandExecutor, TabCompleter {
+public class CommandSmartSaddle implements CommandExecutor, TabCompleter {
 
-	private final HorseSaddle plugin;
+	private final SmartSaddle plugin;
 
-	public CommandHorseSaddle(HorseSaddle plugin) {
+	public CommandSmartSaddle(SmartSaddle plugin) {
 		this.plugin = plugin;
-		plugin.getCommand("horsesaddle").setExecutor(this);
+		plugin.getCommand("smartsaddle").setExecutor(this);
 	}
 
 	@Override
@@ -22,6 +22,7 @@ public class CommandHorseSaddle implements CommandExecutor, TabCompleter {
 			return true;
 		}
 
+		sender.sendMessage(Config.getConfig().getMessage(Paths.MESSAGES_RELOADED));
 		plugin.reload();
 		return true;
 	}

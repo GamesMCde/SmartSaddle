@@ -1,6 +1,6 @@
-package de.cuzim1tigaaa.horsesaddle.files;
+package de.cuzim1tigaaa.smartsaddle.files;
 
-import de.cuzim1tigaaa.horsesaddle.HorseSaddle;
+import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +15,8 @@ import java.util.regex.Pattern;
 public class Config {
 
 	private FileConfiguration fileConfig, fileMessages;
-	@Getter	private List<String> disabledWorlds;
+	@Getter
+	private List<String> disabledWorlds;
 
 	private static Config config;
 
@@ -63,12 +64,12 @@ public class Config {
 		return ChatColor.translateAlternateColorCodes('&', message.toString());
 	}
 
-	private void set(String path, Object value, String... comments) {
+	private void set(FileConfiguration fileConfig, String path, Object value, String... comments) {
 		fileConfig.setComments(path, List.of(comments));
 		fileConfig.set(path, fileConfig.get(path, value));
 	}
 
-	public void loadConfig(HorseSaddle plugin) {
+	public void loadConfig(SmartSaddle plugin) {
 		try {
 			File file = new File(plugin.getDataFolder(), "config.yml");
 			if(!file.exists()) {
@@ -76,7 +77,7 @@ public class Config {
 				fileConfig.save(file);
 			}
 			fileConfig = YamlConfiguration.loadConfiguration(file);
-			set(Paths.CONFIG_DISABLED_WORLDS, List.of("world"), "List of disabled worlds");
+			set(fileConfig, Paths.CONFIG_DISABLED_WORLDS, List.of("worldToDisable"), "List of disabled worlds");
 			fileConfig.save(file);
 		}catch(IOException e) {
 			plugin.getLogger().severe("Failed to load config file!");
@@ -85,7 +86,7 @@ public class Config {
 		this.disabledWorlds = fileConfig.getStringList(Paths.CONFIG_DISABLED_WORLDS);
 	}
 
-	public void loadMessages(HorseSaddle plugin) {
+	public void loadMessages(SmartSaddle plugin) {
 		try {
 			File file = new File(plugin.getDataFolder(), "messages.yml");
 			if(!file.exists()) {
@@ -93,16 +94,18 @@ public class Config {
 				fileMessages.save(file);
 			}
 			fileMessages = YamlConfiguration.loadConfiguration(file);
-			set(Paths.MESSAGES_PERMISSION, "&cYou do not have permission to use this command");
-			set(Paths.MESSAGES_SADDLE_NAME, "&6%TYPE%");
-			set(Paths.MESSAGES_SADDLE_LORE, List.of(
-					"",
-					"&7Custom Name: &6%CUSTOM_NAME%",
-					"&7Jump Strength: &6%JUMP_STRENGTH%",
-					"&7Speed: &6%SPEED%",
-					"&7Max Health: &6%MAX_HEALTH%",
-					"&7Health: &6%HEALTH%"
-			),
+			set(fileMessages, Paths.MESSAGES_PERMISSION, "&cYou do not have permission to use this command");
+			set(fileMessages, Paths.MESSAGES_RELOADED, "&7The plugin has been reloaded.");
+
+			set(fileMessages, Paths.MESSAGES_SADDLE_NAME, "&6%TYPE%");
+			set(fileMessages, Paths.MESSAGES_SADDLE_LORE, List.of(
+							"",
+							"&7Custom Name: &6%CUSTOM_NAME%",
+							"&7Jump Strength: &6%JUMP_STRENGTH%",
+							"&7Speed: &6%SPEED%",
+							"&7Max Health: &6%MAX_HEALTH%",
+							"&7Health: &6%HEALTH%"
+					),
 					"General Lore data for saddles. The following placeholders can be used:",
 					"%CUSTOM_NAME% - The custom name of the horse",
 					"%JUMP_STRENGTH% - The jump strength of the horse",
@@ -110,11 +113,11 @@ public class Config {
 					"%MAX_HEALTH% - The max health of the horse",
 					"%HEALTH% - The health of the horse");
 
-			set(Paths.MESSAGES_SADDLE_LORE_HORSE, List.of(
-					"",
-					"&7Color: &6%COLOR%",
-					"&7Style: &6%STYLE%"
-			),
+			set(fileMessages, Paths.MESSAGES_SADDLE_LORE_HORSE, List.of(
+							"",
+							"&7Color: &6%COLOR%",
+							"&7Style: &6%STYLE%"
+					),
 					"Horse specific lore data for saddles. The following placeholders can be used:",
 					"%COLOR% - The color of the horse",
 					"%STYLE% - The style of the horse");

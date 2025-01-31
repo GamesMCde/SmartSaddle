@@ -1,29 +1,29 @@
 name: ${project.name}
 version: ${project.version}
 main: ${project.groupId}.${project.artifactId}
-api-version: '1.21'
-depends: [ 'NBTApi']
+api-version: '1.20'
+depends: [ 'NBTApi' ]
 authors: [ CuzIm1Tigaaa ]
 description: 'TODO'
 commands:
-  horsesaddle:
+  smartsaddle:
     description: 'Reload the config files'
 permissions:
-  horsesaddle.*:
+  smartsaddle.*:
     default: op
     children:
-      horsesaddle.use:
+      smartsaddle.use:
         default: false
         children:
-          horsesaddle.use.horse:
+          smartsaddle.use.horse:
             default: false
-          horsesaddle.use.skeleton_horse:
+          smartsaddle.use.skeleton_horse:
             default: false
-          horsesaddle.use.zombie_horse:
+          smartsaddle.use.zombie_horse:
             default: false
-          horsesaddle.use.donkey:
+          smartsaddle.use.donkey:
             default: false
-          horsesaddle.use.mule:
+          smartsaddle.use.mule:
             default: false
-          horsesaddle.use.camel:
+          smartsaddle.use.camel:
             default: false
