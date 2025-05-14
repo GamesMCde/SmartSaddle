@@ -3,6 +3,7 @@ package de.cuzim1tigaaa.smartsaddle.utils;
 import de.cuzim1tigaaa.smartsaddle.SmartSaddle;
 import de.cuzim1tigaaa.smartsaddle.files.Config;
 import de.cuzim1tigaaa.smartsaddle.files.Paths;
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.*;
 import org.bukkit.entity.AbstractHorse;
@@ -12,8 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SaddleUtils {
 
@@ -66,13 +66,17 @@ public class SaddleUtils {
 		return saddle;
 	}
 
-	public boolean spawnHorseFromSaddle(ItemStack saddle, Location location) {
+	public boolean spawnHorseFromSaddle(UUID placedBy, ItemStack saddle, Location location) {
 		ItemMeta meta = saddle.getItemMeta();
 		String data = meta.getPersistentDataContainer().get(horseDataKey, PersistentDataType.STRING);
 		if(data == null)
 			return false;
 
 		AbstractHorse horse = horseWrapper.deserialize(data, location);
-		return horse != null && horse.isValid();
+		if(horse == null)
+			return false;
+
+		horse.getPersistentDataContainer().set(plugin.getOwnerKey(), PersistentDataType.STRING, placedBy.toString());
+		return horse.isValid();
 	}
 }
